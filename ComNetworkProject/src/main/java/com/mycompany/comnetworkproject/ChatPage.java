@@ -343,8 +343,7 @@ public class ChatPage extends javax.swing.JFrame {
 
     private void btnRefChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefChatActionPerformed
         // TODO add your handling code here:
-        /*Message msg = new Message(Message.Message_Type.Refresh);
-        client.Send(msg);*/
+       
     }//GEN-LAST:event_btnRefChatActionPerformed
 
     private void btnOpenChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenChatActionPerformed
@@ -354,12 +353,12 @@ public class ChatPage extends javax.swing.JFrame {
 
     private void btnSendChatContentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendChatContentActionPerformed
         // TODO add your handling code here:
-      
+     
     }//GEN-LAST:event_btnSendChatContentActionPerformed
 
     private void btnSendUserSectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendUserSectionActionPerformed
         // TODO add your handling code here:
-      
+       
       
     }//GEN-LAST:event_btnSendUserSectionActionPerformed
 
