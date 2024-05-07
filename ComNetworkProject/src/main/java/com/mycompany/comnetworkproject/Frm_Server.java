@@ -4,6 +4,9 @@
  */
 package com.mycompany.comnetworkproject;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 
 /**
@@ -17,13 +20,15 @@ public class Frm_Server extends javax.swing.JFrame {
      */
     
     //Server server = new Server();
-    public static DefaultListModel lst_clients_model = new DefaultListModel();
+    Server server;
+    public static DefaultListModel lst_clientsModel = new DefaultListModel();
     public static DefaultListModel lst_messagesFromClient_model = new DefaultListModel();
    
     
     public Frm_Server() {
         initComponents();
-        lst_clients.setModel(lst_clients_model);
+        lst_clients.setModel(lst_clientsModel);
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -54,11 +59,6 @@ public class Frm_Server extends javax.swing.JFrame {
         jLabel1.setText("Server Page ");
 
         txt_port.setText("5001");
-        txt_port.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_portActionPerformed(evt);
-            }
-        });
 
         txta_messageToClient.setColumns(20);
         txta_messageToClient.setRows(5);
@@ -150,11 +150,9 @@ public class Frm_Server extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_sendMsg)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(39, Short.MAX_VALUE))))
+                        .addComponent(btn_sendMsg))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -162,23 +160,34 @@ public class Frm_Server extends javax.swing.JFrame {
 
     private void btn_stopServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_stopServerActionPerformed
         // TODO add your handling code here:
-        
-
+        this.server.Stop();
+        this.btn_startServer.setEnabled(true);
+        //???
     }//GEN-LAST:event_btn_stopServerActionPerformed
 
     private void btn_startServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_startServerActionPerformed
         // TODO add your handling code here:
+        try {
+            int port = Integer.parseInt(txt_port.getText());
+            server = new Server(port);
+            server.listenServer();
+            this.btn_startServer.setEnabled(false);
+            this.btn_stopServer.setEnabled(true);
+            System.out.println("Server enable!");
+        } catch (IOException ex) {
+            Logger.getLogger(Frm_Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }//GEN-LAST:event_btn_startServerActionPerformed
 
     private void btn_sendMsgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sendMsgActionPerformed
         // TODO add your handling code here:
+        int index = lst_clients.getSelectedIndex();
+        String txt = txta_messageToClient.getText();
+        server.SendToClient(index, txt);
+        txta_messageToClient.setText("");
 
     }//GEN-LAST:event_btn_sendMsgActionPerformed
-
-    private void txt_portActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_portActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_portActionPerformed
 
     /**
      * @param args the command line arguments
