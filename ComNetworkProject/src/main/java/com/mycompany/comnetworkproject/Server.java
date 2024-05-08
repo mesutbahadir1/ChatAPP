@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author mesut
  */
-public class Server extends Thread{
+public class Server extends Thread {
 
     public ServerSocket serverSocket;
     public ArrayList<SClient> clientList;
@@ -25,40 +25,79 @@ public class Server extends Thread{
     public boolean isListening = false;
     public ObjectOutputStream clientOutput;
     public ObjectInputStream clientInput;
-   
-    public int clientId=0;
-    public ArrayList<String> rooms;
+    public int clientId = 0;
+    public ArrayList<String> chats;
+    public int port;
 
     public Server(int serverPort) throws IOException {
-        this.serverSocket = new ServerSocket(5001);
+        this.port = serverPort;
+        this.serverSocket = new ServerSocket(this.port);
         this.clientList = new ArrayList<>();
-        this.rooms = new ArrayList<>();
+        this.chats = new ArrayList<>();
 
     }
 
     public void listenServer() {
-        isListening=true;
+        isListening = true;
         this.start();
     }
 
     public void DisconnectClient(SClient client) {
         this.clientList.remove(client);
-         Frm_Server.lst_clientsModel.removeAllElements();
+        ServerPage.lst_clientsModel.removeAllElements();
         for (SClient sClient : clientList) {
-            String cinfo = sClient.clientSocket.getInetAddress().toString() + ":" + sClient.clientSocket.getPort();
-            Frm_Server.lst_clientsModel.addElement(cinfo);
+            String cinfo = sClient.socket.getInetAddress().toString() + ":" + sClient.socket.getPort();
+            ServerPage.lst_clientsModel.addElement(cinfo);
         }
     }
 
-    
+    public void reqToAll(Request req) {
+        clientList.forEach(client -> {
+            try {
+                client.sOutput.writeObject(req);
+            } catch (Exception ex) {
+                System.out.println("ex:" + ex);
+
+            }
+        });
+    }
+
+    public void reqToChat(SClient client, Request req) {
+
+        try {
+            client.sOutput.writeObject(req);
+        } catch (Exception ex) {
+            System.out.println("ex:" + ex);
+        }
+    }
+
     public void Stop() {
         try {
             this.isListening = false;
             this.serverSocket.close();
             System.out.println("Server Stopped");
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            System.out.println("ex:" + ex);
         }
+    }
+
+    public void reqToClient(SClient client, Request req) {
+
+        try {
+            client.sOutput.writeObject(req);
+        } catch (Exception ex) {
+            System.out.println("ex:" + ex);
+        }
+
+    }
+
+    public void reqToClientWithIndex(int index, String req) {
+        try {
+            this.clientList.get(index).sOutput.writeObject(req);
+        } catch (Exception ex) {
+            System.out.println("ex:" + ex);
+        }
+
     }
 
     @Override
@@ -66,19 +105,16 @@ public class Server extends Thread{
 
         try {
             while (this.isListening) {
-                System.out.println("Server waiting client...");
-                Socket clientSocket = serverSocket.accept(); //blocking
+                Socket clientSocket = serverSocket.accept();
                 this.clientId++;
-                SClient newClient = new SClient(this, clientSocket, this.clientId);
-                this.clientList.add(newClient);
-                newClient.ListenClient();
+                SClient nsclient = new SClient(this, clientSocket, this.clientId);
+                this.clientList.add(nsclient);
+                nsclient.Listen();
             }
 
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            System.out.println("ex:" + ex);
         }
     }
-    
-    
-    
+
 }
