@@ -120,7 +120,7 @@ public class ServerPage extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btn_stopServer))
                             .addComponent(btn_sendMsg))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24))
         );
@@ -183,9 +183,8 @@ public class ServerPage extends javax.swing.JFrame {
         // TODO add your handling code here:
         int index = lst_clients.getSelectedIndex();
         String txt = txta_messageToClient.getText();
-        server.SendToClient(index, txt);
+        server.reqToClientWithIndex(index, txt);
         txta_messageToClient.setText("");
-
     }//GEN-LAST:event_btn_sendMsgActionPerformed
 
     /**
