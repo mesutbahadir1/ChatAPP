@@ -11,68 +11,111 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
 
 /**
  *
  * @author mesut
  */
 public class Client {
-    Socket client_socket;
-    String server;
-    int roomId;
-  
-    ChatPage chatScreen;
+
+    Socket socket;
+    String ip;
+    String chat;
+    Connect cn;
     String name;
     ObjectOutputStream sOutput;
     ObjectInputStream sInput;
     int port;
-    String room;
 
     public Client(ChatPage chatScreen) {
-        this.chatScreen = chatScreen;
     }
 
-    public void Start(String user) throws IOException {
-        this.port=5001;
-        this.server = "localhost";
-        client_socket = new Socket(server, port);
-        sInput = new ObjectInputStream(client_socket.getInputStream());
-        sOutput = new ObjectOutputStream(client_socket.getOutputStream());
-        this.room="room page";   
-        name = user;
-       
-    }
-
-    public void SendMessage(Message msg) {
+    public void ConnectToServer(String user) throws IOException {
+        this.port = 5001;
+        this.ip = "localhost";
+        this.chat = "start";
+        this.name = user;
         try {
-            sOutput.writeObject(msg);
+            socket = new Socket(ip, port);
+            sInput = new ObjectInputStream(socket.getInputStream());
+            sOutput = new ObjectOutputStream(socket.getOutputStream());
+            cn = new Connect(this);
+            cn.start();
+        } catch (Exception e) {
+            System.out.println("e :" + e);
+        }
+
+        Request reqName = new Request("Connect");
+        reqName.o = user;
+        SendMessage(reqName);
+    }
+
+    public void SendMessage(Request req) {
+        try {
+            sOutput.writeObject(req);
             sOutput.flush();
-        } catch (IOException ex) {
-            System.out.println("Exception writing to server: " + ex);
+        } catch (Exception err) {
+            System.out.println("Exception writing to server: " + err);
         }
 
     }
+
     public void disconnect() {
         try {
             //tüm nesneleri kapatıyoruz
-            if (sInput != null) {
+            if (sInput != null ||sOutput != null) {
                 sInput.close();
             }
-            if (sOutput != null) {
-                sOutput.close();
+            if (socket != null) {
+                socket.close();
             }
-
-            if (client_socket != null) {
-                client_socket.close();
-            }
-
         } catch (Exception err) {
             System.out.println(err.getMessage());
         }
 
     }
 
-   
-    
+    class Connect extends Thread {
+
+        Client client;
+
+        Connect(Client c) {
+            client = c;
+        }
+
+        @Override
+        public void run() {
+            while (client.socket.isConnected()) {
+                try {
+                    Request req = (Request) (client.sInput.readObject());
+                    if (req.op.equals("lstClientUpdate")) {
+                        ArrayList clients = (ArrayList) req.o;
+                        ChatPage.userList.removeAllElements();
+                        for (int i = 0; i < clients.size(); i++) {
+                            ChatPage.userList.addElement(clients.get(i).toString());
+                        }
+                    } 
+                    else if (req.op.equals("lstRoomUpdate")) {
+                        ArrayList<String> chatList = (ArrayList) req.o;
+                        ChatPage.chats = chatList;
+                        ChatPage.chatList.removeAllElements();
+                        for (int i = 0; i < chatList.size(); i++) {
+                            ChatPage.chatList.addElement(chatList.get(i));
+                        }
+                    } 
+                    else if (req.op.equals("addUserChat")) {
+                        ChatPage.userInfoList.addElement(req.sender + " : " + req.o.toString());
+                    } 
+                    else if (req.op.equals("addChat")) {
+                        ChatPage.chatInfoList.addElement(req.sender + " : " + req.o.toString());
+                    }
+                } 
+                catch (Exception ex) {
+                    System.out.println("ex: "+ ex);
+                }
+            }
+
+        }
+
+    }
 }
