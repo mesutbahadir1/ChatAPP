@@ -36,8 +36,8 @@ public class SClient extends Thread {
             this.id = id;
             this.chat = "start";
 
-        } catch (IOException ex) {
-            Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            System.out.println("ex:" + ex);
         }
 
     }
@@ -49,9 +49,57 @@ public class SClient extends Thread {
 
     @Override
     public void run() {
+        try {
+            while (this.isListening) {
+                Request req = (Request) this.sInput.readObject();
 
-        
+                if (req.op.equals("Connect")) {
+                    ServerPage.lst_clientsModel.addElement(req.o.toString());
+                    this.name = req.o.toString();
+                    Request updateClients = new Request("lstClientUpdate");
+                    ArrayList<String> users = new ArrayList<>();
+                    for (int i = 0; i < server.clientList.size(); i++) {
+                        users.add(server.clientList.get(i).name);
+                    }
+                    updateClients.o = users;
+                    server.reqToAll(updateClients);
+                } else if (req.op.equals("generateChat")) {
+                    String chatName = req.o.toString();
+                    server.chats.add(chatName);
+                    Request chatListUpdate = new Request("lstRoomUpdate");
+                    chatListUpdate.o = server.chats;
+                    server.reqToAll(chatListUpdate);
+                } else if (req.op.equals("addUserChat")) {
+                    String search = req.reciever;
+                    for (int i = 0; i < server.clientList.size(); i++) {
+                        if (server.clientList.get(i).name.equals(search)) {
+                            server.reqToClient(server.clientList.get(i), req);
+                        }
+                    }
+                } else if (req.op.equals("addChat")) {
+                    String r = chat;
+                    for (int i = 0; i < server.clientList.size(); i++) {
+                        if (r.equals(server.clientList.get(i).chat)) {
+                            server.reqToChat(server.clientList.get(i), req);
+                        }
+                    }
+                } else if (req.op.equals("refreshChat")) {
+                    Request chatListUpdate = new Request("lstRoomUpdate");
+                    chatListUpdate.o = server.chats;
+                    server.reqToAll(chatListUpdate);
+                } else if (req.op.equals("connectChat")) {
+                    this.chat = req.o.toString();
+                }
+            }
+
+        } catch (Exception ex) {
+            System.out.println("ex: " + ex);
+        } finally {
+            this.server.DisconnectClient(this);
+        }
+
     }
+
     //clientı kapatan fonksiyon
     public void Disconnect() {
         try {
@@ -61,8 +109,8 @@ public class SClient extends Thread {
             this.sOutput.close();
             this.server.DisconnectClient(this);
 
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            System.out.println("ex:" + ex);
         }
     }
 
