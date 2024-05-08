@@ -46,20 +46,19 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace pref="96" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
+                  <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              </Group>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="110" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="141" max="-2" attributes="0"/>
+                          <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="110" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="jLabel2" min="-2" pref="195" max="-2" attributes="0"/>
@@ -146,9 +145,9 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="label" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="label1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="label1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="label3" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -179,9 +178,6 @@
           </Layout>
           <SubComponents>
             <Component class="javax.swing.JTextField" name="txtChatInfo">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Please enter chat name!"/>
-              </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="btnGenerateChat">
               <Properties>
@@ -306,10 +302,6 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane3" max="32767" attributes="0"/>
-                          </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="126" max="-2" attributes="0"/>
                               <Component id="label2" min="-2" pref="117" max="-2" attributes="0"/>
@@ -318,12 +310,16 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="txtAreaChatSection" min="-2" pref="230" max="-2" attributes="0"/>
                               <EmptySpace pref="26" max="32767" attributes="0"/>
-                              <Component id="btnFileToChat" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnSendChatContent" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jScrollPane3" min="-2" pref="353" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace pref="18" max="32767" attributes="0"/>
@@ -340,7 +336,7 @@
                       <EmptySpace pref="30" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="txtAreaChatSection" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
-                          <Component id="btnFileToChat" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="btnSendChatContent" min="-2" max="-2" attributes="0"/>
@@ -357,7 +353,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JList" name="lstChatContent">
+                <Component class="javax.swing.JList" name="lstChatInfo">
                   <Properties>
                     <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                       <StringArray count="0"/>
@@ -404,7 +400,7 @@
                 <Property name="text" type="java.lang.String" value="Chat Section"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="btnFileToChat">
+            <Component class="javax.swing.JButton" name="jButton1">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Load File"/>
               </Properties>
@@ -431,7 +427,7 @@
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="txtAreaUserSection" min="-2" pref="186" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
-                                      <Component id="btnFileToUserChat" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btn" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -454,7 +450,7 @@
                       <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="txtAreaUserSection" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                          <Component id="btnFileToUserChat" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btn" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                       <Component id="btnSendUserSection" min="-2" pref="31" max="-2" attributes="0"/>
@@ -482,7 +478,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JList" name="lstUserContent">
+                <Component class="javax.swing.JList" name="lstUserInfo">
                   <Properties>
                     <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                       <StringArray count="0"/>
@@ -515,7 +511,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSendUserSectionActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="btnFileToUserChat">
+            <Component class="javax.swing.JButton" name="btn">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Load File"/>
               </Properties>

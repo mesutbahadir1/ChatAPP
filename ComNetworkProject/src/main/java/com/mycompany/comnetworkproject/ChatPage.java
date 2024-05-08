@@ -4,20 +4,47 @@
  */
 package com.mycompany.comnetworkproject;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author mesut
  */
 public class ChatPage extends javax.swing.JFrame {
 
-    /**
-     * Creates new form MainScreen
-     */
     
+    Client client;
+    String name;
+    public static ArrayList<String> chats = new ArrayList();
+    public static DefaultListModel chatInfoList = new DefaultListModel();
+    public static DefaultListModel userInfoList = new DefaultListModel();
+    public static DefaultListModel chatList = new DefaultListModel();
+    public static DefaultListModel userList = new DefaultListModel();
+  
+
+
     public ChatPage(String txt) {
         initComponents();
+        this.name = txt;
         this.setLocationRelativeTo(null);
-        jLabel2.setText("Welcome "+txt +"!");
+        jLabel2.setText("Welcome " + this.name + "!");
+        lstUserInfo.setModel(userInfoList);
+        lstChat.setModel(chatList);
+        lstChatInfo.setModel(chatInfoList);
+        lstUser.setModel(userList);
+        
+        client = new Client(this);
+        try {
+            client.ConnectToServer(name);
+            chatInfoList.addElement("Welcome to the Chat App..");
+        } catch (IOException ex) {
+            Logger.getLogger(ChatPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -28,7 +55,6 @@ public class ChatPage extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -46,18 +72,18 @@ public class ChatPage extends javax.swing.JFrame {
         label3 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        lstChatContent = new javax.swing.JList<>();
+        lstChatInfo = new javax.swing.JList<>();
         txtAreaChatSection = new javax.swing.JTextField();
         btnSendChatContent = new javax.swing.JButton();
         label2 = new javax.swing.JLabel();
-        btnFileToChat = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         label4 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        lstUserContent = new javax.swing.JList<>();
+        lstUserInfo = new javax.swing.JList<>();
         txtAreaUserSection = new javax.swing.JTextField();
         btnSendUserSection = new javax.swing.JButton();
-        btnFileToUserChat = new javax.swing.JButton();
+        btn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,8 +94,6 @@ public class ChatPage extends javax.swing.JFrame {
         jLabel2.setText("Welcome User!");
 
         jPanel2.setBackground(new java.awt.Color(51, 0, 0));
-
-        txtChatInfo.setText("Please enter chat name!");
 
         btnGenerateChat.setFont(new java.awt.Font("Yu Gothic Medium", 1, 14)); // NOI18N
         btnGenerateChat.setText("Generate");
@@ -147,8 +171,8 @@ public class ChatPage extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(label)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(label, javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(label1))
                     .addComponent(label3))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,7 +195,7 @@ public class ChatPage extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(51, 0, 0));
 
-        jScrollPane3.setViewportView(lstChatContent);
+        jScrollPane3.setViewportView(lstChatInfo);
 
         txtAreaChatSection.setMinimumSize(new java.awt.Dimension(30, 22));
 
@@ -189,7 +213,7 @@ public class ChatPage extends javax.swing.JFrame {
         label2.setForeground(new java.awt.Color(255, 255, 255));
         label2.setText("Chat Section");
 
-        btnFileToChat.setText("Load File");
+        jButton1.setText("Load File");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -198,20 +222,20 @@ public class ChatPage extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane3))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(126, 126, 126)
                         .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(txtAreaChatSection, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                        .addComponent(btnFileToChat)
+                        .addComponent(jButton1)
                         .addGap(23, 23, 23))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(btnSendChatContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(btnSendChatContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -224,7 +248,7 @@ public class ChatPage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtAreaChatSection, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnFileToChat))
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSendChatContent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
@@ -236,7 +260,7 @@ public class ChatPage extends javax.swing.JFrame {
         label4.setForeground(new java.awt.Color(255, 255, 255));
         label4.setText("User Chat Section");
 
-        jScrollPane4.setViewportView(lstUserContent);
+        jScrollPane4.setViewportView(lstUserInfo);
 
         txtAreaUserSection.setMinimumSize(new java.awt.Dimension(30, 22));
 
@@ -249,7 +273,7 @@ public class ChatPage extends javax.swing.JFrame {
             }
         });
 
-        btnFileToUserChat.setText("Load File");
+        btn.setText("Load File");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -265,7 +289,7 @@ public class ChatPage extends javax.swing.JFrame {
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(txtAreaUserSection, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(45, 45, 45)
-                                .addComponent(btnFileToUserChat))))
+                                .addComponent(btn))))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(126, 126, 126)
                         .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -281,7 +305,7 @@ public class ChatPage extends javax.swing.JFrame {
                 .addGap(25, 25, 25)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtAreaUserSection, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnFileToUserChat))
+                    .addComponent(btn))
                 .addGap(29, 29, 29)
                 .addComponent(btnSendUserSection, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27))
@@ -292,17 +316,17 @@ public class ChatPage extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(96, Short.MAX_VALUE)
+                .addGap(82, 82, 82)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(77, 77, 77))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(110, 110, 110)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(141, 141, 141)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(110, 110, 110))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(446, 446, 446))))
@@ -338,28 +362,51 @@ public class ChatPage extends javax.swing.JFrame {
 
     private void btnGenerateChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateChatActionPerformed
         // TODO add your handling code here:
-        
+        if (!txtChatInfo.getText().equals("")) {         
+            Request req = new Request("generateChat");
+            req.o = txtChatInfo.getText();
+            client.SendMessage(req);
+            txtChatInfo.setText("");
+        } else {
+            JOptionPane.showMessageDialog(this, "Enter chat name!");
+        }
     }//GEN-LAST:event_btnGenerateChatActionPerformed
 
     private void btnRefChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefChatActionPerformed
         // TODO add your handling code here:
-       
+        Request req = new Request("refreshChat");
+        client.SendMessage(req);
     }//GEN-LAST:event_btnRefChatActionPerformed
 
     private void btnOpenChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenChatActionPerformed
         // TODO add your handling code here:
-        
+        if (!lstChat.getSelectedValue().equals("")) {
+            client.chat = lstChat.getSelectedValue();
+            Request req = new Request("connectChat");
+            req.o = lstChat.getSelectedValue();
+            client.SendMessage(req);
+            chatInfoList.removeAllElements();
+            chatInfoList.addElement("Welcome to the " + client.chat + "chat");
+        } else {
+            JOptionPane.showMessageDialog(this, "Select a Chat");
+        }
     }//GEN-LAST:event_btnOpenChatActionPerformed
 
     private void btnSendChatContentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendChatContentActionPerformed
         // TODO add your handling code here:
-     
+        String str = txtAreaChatSection.getText();
+        Request req = new Request("addChat", str, client.name);
+        client.SendMessage(req);
+        txtAreaChatSection.setText(" ");
     }//GEN-LAST:event_btnSendChatContentActionPerformed
 
     private void btnSendUserSectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendUserSectionActionPerformed
         // TODO add your handling code here:
-       
-      
+        if (!lstUser.getSelectedValue().equals("") | !txtAreaUserSection.getText().equals("")) {
+            Request req = new Request("addUserChat", txtAreaUserSection.getText(), client.name, lstUser.getSelectedValue());
+            client.SendMessage(req);
+            txtAreaUserSection.setText(" ");
+        }
     }//GEN-LAST:event_btnSendUserSectionActionPerformed
 
     /**
@@ -395,19 +442,19 @@ public class ChatPage extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                
+
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnFileToChat;
-    private javax.swing.JButton btnFileToUserChat;
+    private javax.swing.JButton btn;
     private javax.swing.JButton btnGenerateChat;
     private javax.swing.JButton btnOpenChat;
     private javax.swing.JButton btnRefChat;
     private javax.swing.JButton btnSendChatContent;
     private javax.swing.JButton btnSendUserSection;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -423,9 +470,9 @@ public class ChatPage extends javax.swing.JFrame {
     private javax.swing.JLabel label3;
     private javax.swing.JLabel label4;
     private javax.swing.JList<String> lstChat;
-    private javax.swing.JList<String> lstChatContent;
+    private javax.swing.JList<String> lstChatInfo;
     private javax.swing.JList<String> lstUser;
-    private javax.swing.JList<String> lstUserContent;
+    private javax.swing.JList<String> lstUserInfo;
     private javax.swing.JTextField txtAreaChatSection;
     private javax.swing.JTextField txtAreaUserSection;
     private javax.swing.JTextField txtChatInfo;
