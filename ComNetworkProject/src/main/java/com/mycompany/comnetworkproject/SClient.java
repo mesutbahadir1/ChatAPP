@@ -54,20 +54,20 @@ public class SClient extends Thread {
                 Request req = (Request) this.sInput.readObject();
 
                 if (req.op.equals("Connect")) {
-                    ServerPage.lst_clientsModel.addElement(req.o.toString());
-                    this.name = req.o.toString();
+                    ServerPage.lst_clientsModel.addElement(req.content.toString());
+                    this.name = req.content.toString();
                     Request updateClients = new Request("lstClientUpdate");
                     ArrayList<String> users = new ArrayList<>();
                     for (int i = 0; i < server.clientList.size(); i++) {
                         users.add(server.clientList.get(i).name);
                     }
-                    updateClients.o = users;
+                    updateClients.content = users;
                     server.reqToAll(updateClients);
                 } else if (req.op.equals("generateChat")) {
-                    String chatName = req.o.toString();
+                    String chatName = req.content.toString();
                     server.chats.add(chatName);
                     Request chatListUpdate = new Request("lstRoomUpdate");
-                    chatListUpdate.o = server.chats;
+                    chatListUpdate.content = server.chats;
                     server.reqToAll(chatListUpdate);
                 } else if (req.op.equals("addUserChat")) {
                     String search = req.reciever;
@@ -85,10 +85,10 @@ public class SClient extends Thread {
                     }
                 } else if (req.op.equals("refreshChat")) {
                     Request chatListUpdate = new Request("lstRoomUpdate");
-                    chatListUpdate.o = server.chats;
+                    chatListUpdate.content = server.chats;
                     server.reqToAll(chatListUpdate);
                 } else if (req.op.equals("connectChat")) {
-                    this.chat = req.o.toString();
+                    this.chat = req.content.toString();
                 }
             }
 
