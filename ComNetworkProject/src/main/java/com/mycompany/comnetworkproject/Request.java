@@ -10,7 +10,7 @@ package com.mycompany.comnetworkproject;
  */
 public class Request implements java.io.Serializable {
 
-    public Object o;
+    public Object content;
     String op;
     String sender;
     String reciever;
@@ -21,14 +21,14 @@ public class Request implements java.io.Serializable {
 
     public Request(String op, Object objContent, String sender, String reciever) {
         this.op = op;
-        this.o = objContent;
+        this.content = objContent;
         this.sender = sender;
         this.reciever = reciever;
     }
 
     public Request(String op, Object objContent, String sender) {
         this.op = op;
-        this.o = objContent;
+        this.content = objContent;
         this.sender = sender;
     }
 
