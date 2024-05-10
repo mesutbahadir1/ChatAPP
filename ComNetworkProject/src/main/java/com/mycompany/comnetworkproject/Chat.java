@@ -11,7 +11,7 @@ package com.mycompany.comnetworkproject;
 public class Chat {
 
     String name;
-    Client c;
+    Client client;
     int id;
     int count;
 
@@ -23,7 +23,7 @@ public class Chat {
 
     public Chat(String name, Client chatCreator) {
         this.name = name;
-        this.c = chatCreator;
+        this.client = chatCreator;
     }
 
 }
