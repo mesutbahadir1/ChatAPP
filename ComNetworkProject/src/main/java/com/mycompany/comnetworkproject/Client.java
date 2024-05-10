@@ -31,12 +31,12 @@ public class Client {
     }
 
     public void ConnectToServer(String user) throws IOException {
-        this.port = 5001;
-        this.ip = "localhost";
+        this.port = 5000;
+        this.ip = "ec2-13-60-96-245.eu-north-1.compute.amazonaws.com";
         this.chat = "start";
         this.name = user;
         try {
-            socket = new Socket(ip, port);
+            socket = new Socket(ip, 5001);
             sInput = new ObjectInputStream(socket.getInputStream());
             sOutput = new ObjectOutputStream(socket.getOutputStream());
             cn = new Connect(this);
@@ -46,7 +46,7 @@ public class Client {
         }
 
         Request reqName = new Request("Connect");
-        reqName.o = user;
+        reqName.content = user;
         SendMessage(reqName);
     }
 
@@ -89,14 +89,14 @@ public class Client {
                 try {
                     Request req = (Request) (client.sInput.readObject());
                     if (req.op.equals("lstClientUpdate")) {
-                        ArrayList clients = (ArrayList) req.o;
+                        ArrayList clients = (ArrayList) req.content;
                         ChatPage.userList.removeAllElements();
                         for (int i = 0; i < clients.size(); i++) {
                             ChatPage.userList.addElement(clients.get(i).toString());
                         }
                     } 
                     else if (req.op.equals("lstRoomUpdate")) {
-                        ArrayList<String> chatList = (ArrayList) req.o;
+                        ArrayList<String> chatList = (ArrayList) req.content;
                         ChatPage.chats = chatList;
                         ChatPage.chatList.removeAllElements();
                         for (int i = 0; i < chatList.size(); i++) {
@@ -104,10 +104,10 @@ public class Client {
                         }
                     } 
                     else if (req.op.equals("addUserChat")) {
-                        ChatPage.userInfoList.addElement(req.sender + " : " + req.o.toString());
+                        ChatPage.userInfoList.addElement(req.sender + " : " + req.content.toString());
                     } 
                     else if (req.op.equals("addChat")) {
-                        ChatPage.chatInfoList.addElement(req.sender + " : " + req.o.toString());
+                        ChatPage.chatInfoList.addElement(req.sender + " : " + req.content.toString());
                     }
                 } 
                 catch (Exception ex) {
