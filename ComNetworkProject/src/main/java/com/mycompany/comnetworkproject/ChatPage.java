@@ -5,6 +5,11 @@
 package com.mycompany.comnetworkproject;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +22,7 @@ import javax.swing.JOptionPane;
  */
 public class ChatPage extends javax.swing.JFrame {
 
-    
+    static String con = "jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7706846";
     Client client;
     String name;
     public static ArrayList<String> chats = new ArrayList();
@@ -25,8 +30,6 @@ public class ChatPage extends javax.swing.JFrame {
     public static DefaultListModel userInfoList = new DefaultListModel();
     public static DefaultListModel chatList = new DefaultListModel();
     public static DefaultListModel userList = new DefaultListModel();
-  
-
 
     public ChatPage(String txt) {
         initComponents();
@@ -36,8 +39,8 @@ public class ChatPage extends javax.swing.JFrame {
         lstUserInfo.setModel(userInfoList);
         lstChat.setModel(chatList);
         lstChatInfo.setModel(chatInfoList);
-        lstUser.setModel(userList);  
-        
+        lstUser.setModel(userList);
+
         client = new Client(this);
         try {
             client.ConnectToServer(name);
@@ -220,19 +223,15 @@ public class ChatPage extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(txtAreaChatSection, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                         .addComponent(jButton1)
                         .addGap(23, 23, 23))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnSendChatContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnSendChatContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(18, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -323,7 +322,7 @@ public class ChatPage extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(145, 145, 145)
+                .addGap(140, 140, 140)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -362,7 +361,7 @@ public class ChatPage extends javax.swing.JFrame {
 
     private void btnGenerateChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateChatActionPerformed
         // TODO add your handling code here:
-        if (!txtChatInfo.getText().equals("")) {         
+        if (!txtChatInfo.getText().equals("")) {
             Request req = new Request("generateChat");
             req.content = txtChatInfo.getText();
             client.SendMessage(req);
@@ -380,6 +379,52 @@ public class ChatPage extends javax.swing.JFrame {
 
     private void btnOpenChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenChatActionPerformed
         // TODO add your handling code here:
+        
+        String username = "chat";
+        String key = JOptionPane.showInputDialog(null, "Enter key for " + username + ":");
+        String chat = lstChat.getSelectedValue();
+
+        if (!lstChat.getSelectedValue().equals("")) {
+
+            Connection connect = null;
+            Statement state = null;
+            ResultSet result = null;
+            boolean isExist = false;
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                connect = DriverManager.getConnection(con, "sql7706846", "6lernLfXgl");
+                state = connect.createStatement();
+                result = state.executeQuery("SELECT * FROM chat");
+
+                while (result.next()) {
+                    String chatN = result.getString("chatName");
+                    String chatK = result.getString("chatKey");
+                    if (chatN.equals(chat) && chatK.equals(key)) {
+                        isExist = true;
+
+                        client.chat = chat;
+                        Request req = new Request("connectChat");
+                        req.content = chat;
+                        client.SendMessage(req);
+                        chatInfoList.removeAllElements();
+                        chatInfoList.addElement("Welcome to the " + client.chat + "chat");
+                    }
+
+                }
+                if (!isExist) {
+                    JOptionPane.showMessageDialog(null, "Chat için girilen şifre bilgisi yanlış.", "Başarısız!", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(StartPage.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ChatPage.class.getName()).log(Level.SEVERE, null, ex);
+            }         
+        } else {
+            JOptionPane.showMessageDialog(this, "Select a Chat");
+        }
+        /*
         if (!lstChat.getSelectedValue().equals("")) {
             client.chat = lstChat.getSelectedValue();
             Request req = new Request("connectChat");
@@ -389,7 +434,8 @@ public class ChatPage extends javax.swing.JFrame {
             chatInfoList.addElement("Welcome to the " + client.chat + "chat");
         } else {
             JOptionPane.showMessageDialog(this, "Select a Chat");
-        }
+        }*/
+    
     }//GEN-LAST:event_btnOpenChatActionPerformed
 
     private void btnSendChatContentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendChatContentActionPerformed
@@ -423,16 +469,28 @@ public class ChatPage extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                }
+
+}
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ChatPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ChatPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ChatPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ChatPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChatPage.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+} catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ChatPage.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+} catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ChatPage.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ChatPage.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
