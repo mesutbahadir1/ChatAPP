@@ -4,13 +4,20 @@
  */
 package com.mycompany.comnetworkproject;
 
+import java.awt.List;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -26,6 +33,7 @@ public class SClient extends Thread {
     public boolean isListening = false;
     String chat;
     String name;
+    static String con = "jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7706846";
 
     public SClient(Server server, Socket clientSocket, int id) {
         try {
@@ -52,6 +60,10 @@ public class SClient extends Thread {
         try {
             while (this.isListening) {
                 Request req = (Request) this.sInput.readObject();
+                Connection connect = null;
+                Statement state = null;
+                ResultSet result = null;
+                boolean isExist = false;
 
                 if (req.op.equals("Connect")) {
                     ServerPage.lst_clientsModel.addElement(req.content.toString());
@@ -65,10 +77,38 @@ public class SClient extends Thread {
                     server.reqToAll(updateClients);
                 } else if (req.op.equals("generateChat")) {
                     String chatName = req.content.toString();
+                    String key = RandomStringGenerator.generateRandomString(10);
+                    try {
+                        Class.forName("com.mysql.jdbc.Driver");
+                        connect = DriverManager.getConnection(con, "sql7706846", "6lernLfXgl");
+                        state = connect.createStatement();
+                        result = state.executeQuery("SELECT * FROM chat where chatName ='" + chatName + "'");
+
+                        if (result.next()) {
+                            JOptionPane.showMessageDialog(null, "Bu chat adı zaten mevcut! Lütfen yeni bir kullanıcı girişi yapınız.", "Warning", JOptionPane.WARNING_MESSAGE);
+                        } else {
+                            connect.close();
+                            connect = DriverManager.getConnection(con, "sql7706846", "6lernLfXgl");
+                            state = connect.createStatement();
+                            result = state.executeQuery("SELECT * FROM chat");
+
+                            String query = "insert into chat values('" + chatName + "',"
+                                    + "'" + key + "')";
+
+                            state.executeUpdate(query);
+                            JOptionPane.showMessageDialog(null, "Room başarıyla eklendi.", "Warning", JOptionPane.WARNING_MESSAGE);
+                        }
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ServerPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    /*
+                    String chatName = req.content.toString();
                     server.chats.add(chatName);
                     Request chatListUpdate = new Request("lstRoomUpdate");
                     chatListUpdate.content = server.chats;
-                    server.reqToAll(chatListUpdate);
+                    server.reqToAll(chatListUpdate);*/
                 } else if (req.op.equals("addUserChat")) {
                     String search = req.reciever;
                     for (int i = 0; i < server.clientList.size(); i++) {
@@ -84,9 +124,35 @@ public class SClient extends Thread {
                         }
                     }
                 } else if (req.op.equals("refreshChat")) {
+                    server.chats.clear();
+                    ArrayList<String> chatNames = new ArrayList<>();
+                    try {
+                        Class.forName("com.mysql.jdbc.Driver");
+                        connect = DriverManager.getConnection(con, "sql7706846", "6lernLfXgl");
+                        state = connect.createStatement();
+                        result = state.executeQuery("SELECT * FROM chat");
+
+                        while (result.next()) {
+                            String chatFor = result.getString("chatName");
+                            chatNames.add(chatFor);
+                            //server.chats.add(chatFor);
+                        }
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ServerPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    for (String chatName : chatNames) {
+                        server.chats.add(chatName);
+                    }
                     Request chatListUpdate = new Request("lstRoomUpdate");
                     chatListUpdate.content = server.chats;
                     server.reqToAll(chatListUpdate);
+
+                    /*
+                    Request chatListUpdate = new Request("lstRoomUpdate");
+                    chatListUpdate.content = server.chats;
+                    server.reqToAll(chatListUpdate);
+                     */
                 } else if (req.op.equals("connectChat")) {
                     this.chat = req.content.toString();
                 }
