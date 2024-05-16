@@ -26,6 +26,7 @@ public class Client {
     ObjectOutputStream sOutput;
     ObjectInputStream sInput;
     int port;
+    String otherIp="ec2-13-60-84-186.eu-north-1.compute.amazonaws.com";
 
     public Client(ChatPage chatScreen) {
     }
@@ -36,7 +37,7 @@ public class Client {
         this.chat = "start";
         this.name = user;
         try {
-            socket = new Socket(ip, 5001);
+            socket = new Socket("ec2-13-60-84-186.eu-north-1.compute.amazonaws.com", 5001);
             sInput = new ObjectInputStream(socket.getInputStream());
             sOutput = new ObjectOutputStream(socket.getOutputStream());
             cn = new Connect(this);
