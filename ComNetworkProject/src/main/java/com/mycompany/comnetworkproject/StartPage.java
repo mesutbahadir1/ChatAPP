@@ -4,6 +4,13 @@
  */
 package com.mycompany.comnetworkproject;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -11,6 +18,8 @@ import javax.swing.JOptionPane;
  * @author mesut
  */
 public class StartPage extends javax.swing.JFrame {
+
+    static String con = "jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7706846";
 
     /**
      * Creates new form Frm_Client
@@ -143,7 +152,41 @@ public class StartPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_ConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ConnectActionPerformed
+        String username = txtfield_Name.getText();
+        Connection connect = null;
+        Statement state = null;
+        ResultSet result = null;
+        boolean isExist = false;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connect = DriverManager.getConnection(con, "sql7706846", "6lernLfXgl");
+            state = connect.createStatement();
+            result = state.executeQuery("SELECT * FROM login");
 
+            while (result.next()) {
+                String userName = result.getString("userName");
+
+                if (username.equals(userName)) {
+                    isExist = true;
+                    String nm = txtfield_Name.getText();
+                    ChatPage chatScreen = new ChatPage(nm);
+                    chatScreen.setVisible(true);
+                    this.dispose();
+                    break;
+                }
+
+            }
+            if (!isExist) {
+                JOptionPane.showMessageDialog(null, "Girilen bilgilere ait kullanıcı bulunamadı.", "Başarısız!", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(StartPage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(StartPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        /*
         if (txtfield_Name.getText().length() < 3 || txtfield_Name.getText().length() > 10) {
             JOptionPane.showMessageDialog(null, "Do not write less than 3 letters and more than 10 letters.");
         } else {
@@ -151,7 +194,7 @@ public class StartPage extends javax.swing.JFrame {
             ChatPage chatScreen = new ChatPage(userName);
             chatScreen.setVisible(true);
             this.dispose();
-        }
+        }*/
     }//GEN-LAST:event_btn_ConnectActionPerformed
 
     /**
